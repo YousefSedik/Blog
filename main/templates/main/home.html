@@ -17,7 +17,7 @@
                   </div>
                   <div>
                         
-                        {% if user == post.author %}
+                        {% if user == post.author or perms.main.delete_post %}
                               <form action="" method="post">
                                     {%csrf_token%}
                                     <button type="submit" class="btn btn-danger" name="post-id" value="{{ post.id }}">delete</button>
@@ -27,7 +27,7 @@
                   </div>
             </div>
             <div class="card-footer text-muted">
-                  {{post.created_at}}
+                  {{post.created_at}} | {{post.created_at_time}}
             </div>
        </div>  
        <br>   
