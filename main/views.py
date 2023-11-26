@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from . import forms, models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.defaults import page_not_found
@@ -9,16 +9,34 @@ from dateutil.relativedelta import relativedelta
 # Create your views here.
 
 # @login_required(login_url='/login')
-def delete_post(re):
-    
-    post_id = re.POST.get('post-id')
+def delete_post(re, post_id):
     post = models.Post.objects.filter(id=post_id).first()
     if post and (post.author == re.user or re.user.has_perm('main.delete_post')):
         post.delete()
+        
 def home(re):
     if re.method == 'POST': 
-        delete_post(re) 
-    
+        post_id = re.POST.get('post-id')
+        user_id = re.POST.get('user-id')
+        print(post_id, user_id)
+        if post_id:
+            delete_post(re, post_id) 
+        else:
+            user = User.objects.get(id=user_id)
+            if re.user.is_staff:
+                try:
+                    group = Group.objects.get(name='default')
+                    group.user_set.remove(user) 
+                    
+                except:
+                    pass
+                try:
+                    group = Group.objects.get(name='mod')
+                    group.user_set.remove(user)
+                except:
+                    pass
+                
+            
     all_posts = models.Post.objects.all()
     month_number = {'1':'Jan', '2':'Feb', '3':'Mar', '4':'Apr', 
                     '5':'May', '6':'Jun', '7':'Jul', '8':'Aug', '9':'Sep'
@@ -48,7 +66,7 @@ def sign_up(re):
     return render(re, 'registration/sign_up.html', {'form':form})
 
 @login_required(login_url='login/')
-@permission_required('main.add.post', login_url='/login', raise_exception=True)
+@permission_required('main.add_post', login_url='/login', raise_exception=True)
 def create_post(re):
     if re.method == 'POST':
         form = forms.PostForm(re.POST)
