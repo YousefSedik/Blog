@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save, pre_save 
 # Create your models here.
 
 
@@ -18,5 +19,14 @@ class Post(models.Model):
     class Meta:
         ordering  = ["-created_at", '-created_at_time']
     
-        
     
+def pre_save_(*args, **kwargs):
+    print("pre save:",args, kwargs)
+        
+def post_save_(*args, **kwargs):
+    print("post save:",args, kwargs)
+        
+        
+pre_save.connect(pre_save_, sender=Post)
+post_save.connect(post_save_, sender=Post)
+

@@ -8,3 +8,4 @@ urlpatterns = [
     path('profile/<str:username>', view_profile, name = 'view_profile'),
     path('Post', create_post, name='create_post')
 ]
+

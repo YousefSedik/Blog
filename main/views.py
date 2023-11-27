@@ -85,6 +85,7 @@ def view_profile(re, username):
     context = {}
     if re.method == 'POST':
         delete_post(re)
+    context['username'] = username
     try:
         profile = User.objects.get(username=username)
         profile_posts = models.Post.objects.filter(author=profile)
