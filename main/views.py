@@ -8,7 +8,6 @@ import datetime
 from dateutil.relativedelta import relativedelta
 # Create your views here.
 
-# @login_required(login_url='/login')
 def delete_post(re, post_id):
     post = models.Post.objects.filter(id=post_id).first()
     if post and (post.author == re.user or re.user.has_perm('main.delete_post')):
@@ -44,9 +43,11 @@ def home(re):
     # month day,year
     current_date = datetime.date
     current_time = datetime.time 
+    print(all_posts.first().created_at.hour)
     # print(current_date.day)
     for post in all_posts:
-        post.created_at = f"{month_number[str(post.created_at.month)]} {post.created_at.day}, {post.created_at.year}"
+        post.created_at = f"{month_number[str(post.created_at.month)]} {post.created_at.day}, {post.created_at.year} |\
+        {str(post.created_at.hour%12 +1).zfill(2)}:{str(post.created_at.minute).zfill(2)} "
         
     return render(re, 'main/home.html', {'posts': all_posts} )
 
