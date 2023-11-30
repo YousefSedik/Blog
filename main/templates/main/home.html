@@ -4,30 +4,15 @@
       Home Page
 {% endblock title %}
 
-
 {% block content %}
       
-      {% for post in posts %}
-       <div class="card mt-2">
-            <div class="card-header"><strong><a href="{% url 'view_profile' post.author.username %}">@{{ post.author.username }}</a></strong></div>
-            <div class="card-body d-flex flex-row justify-content-between">
-                  <div>
-                        <h5 class="card-title"> {{ post.title}} </h5>
-                        <p> {{ post.description}}</p>
-                        
-                  </div>
-                  
-                  <!-- Options Control -->
-                  {% include 'main/options_access.html' %}
-            </div>
-            <!-- add Date Info  -->
-            {% include 'main/viewDateInfo.html' %}
-       </div>  
-       <br>   
-       {% empty %}
-       <h3 style="text-align: center;">No Posts yet :(</h3>
-      {% endfor %}
-            
-      
+      <form action="" method="POST">
+            {% csrf_token %}
+            <h1>Search</h1>
+            <input type="text" name="search_panel" value="{{ request.GET.search_panel }}" id="">
+            <button type="submit">Search</button>
+      </form>
+
+      {% include 'main/show_posts.html' %}
       
 {% endblock content %}

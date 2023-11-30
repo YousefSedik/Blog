@@ -10,13 +10,19 @@ class Register_form(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
         
-        
+    
 class PostForm(forms.ModelForm):
     
     class Meta:
         
         model = models.Post
         fields = [
-            'title', 
-            'description',
-        ]
+            'post_text'
+            ]
+        
+    
+    def __init__(self, *args, **kwargs):
+        super(PostForm, self).__init__(*args, **kwargs)
+        self.fields['post_text'].label = 'Post' 
+    
+        

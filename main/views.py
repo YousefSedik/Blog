@@ -8,19 +8,39 @@ import datetime
 from dateutil.relativedelta import relativedelta
 # Create your views here.
 
-def delete_post(re, post_id):
+def delete_post(post_id):
     post = models.Post.objects.filter(id=post_id).first()
-    if post and (post.author == re.user or re.user.has_perm('main.delete_post')):
-        post.delete()
+    post.delete()
+     
+     
+def search(request, query):
+    if request.method == 'POST':
+        post_id = request.POST.get('post-id')
+        if post_id:
+            delete_post(post_id)
+
+    if query is None:
+        query = ''
         
+        
+    
+    posts = models.Post.objects.search(query) 
+    return render(request,'main/search.html', {'posts':posts}) 
+
 def home(re):
+    
     if re.method == 'POST': 
         post_id = re.POST.get('post-id')
         user_id = re.POST.get('user-id')
+        query = re.POST.get('search_panel')
+        
         print(post_id, user_id)
         if post_id:
-            delete_post(re, post_id) 
-        else:
+            post = models.Post.objects.get(id=post_id)
+            if (post.author == re.user or re.user.has_perm('main.delete_post')):
+                delete_post(post_id) 
+                
+        elif user_id:
             user = User.objects.get(id=user_id)
             if re.user.is_staff:
                 try:
@@ -34,23 +54,22 @@ def home(re):
                     group.user_set.remove(user)
                 except:
                     pass
-                
+        
+        elif query:
+            return redirect(f"/search/{query}")
             
-    all_posts = models.Post.objects.all()
+        
+    all_posts = models.Post.objects.get_first(5)
+    
     month_number = {'1':'Jan', '2':'Feb', '3':'Mar', '4':'Apr', 
                     '5':'May', '6':'Jun', '7':'Jul', '8':'Aug', '9':'Sep'
                     , '10':'Oct', '11':'Nov', '12': 'Dec'}
-    # month day,year
-    current_date = datetime.date
-    current_time = datetime.time 
-    print(all_posts.first().created_at.hour)
-    # print(current_date.day)
+
     for post in all_posts:
         post.created_at = f"{month_number[str(post.created_at.month)]} {post.created_at.day}, {post.created_at.year} |\
         {str(post.created_at.hour%12 +1).zfill(2)}:{str(post.created_at.minute).zfill(2)} "
         
     return render(re, 'main/home.html', {'posts': all_posts} )
-
 
 def sign_up(re):
     if re.method == 'POST':
