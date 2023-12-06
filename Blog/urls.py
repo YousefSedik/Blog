@@ -23,6 +23,7 @@ IS_PRODUCTION_VERSION = False
 urlpatterns = [
     path('', include('main.urls')),
     path('', include('django.contrib.auth.urls'))
+    
 ]
 
 if not IS_PRODUCTION_VERSION:

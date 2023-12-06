@@ -8,11 +8,17 @@ import datetime
 from dateutil.relativedelta import relativedelta
 # Create your views here.
 
+def add_like(request):
+    # user = request.user 
+    # print(user)
+    pass 
+
 def delete_post(post_id):
     post = models.Post.objects.filter(id=post_id).first()
     post.delete()
      
      
+
 def search(request, query):
     if request.method == 'POST':
         post_id = request.POST.get('post-id')

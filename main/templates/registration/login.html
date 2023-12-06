@@ -9,7 +9,9 @@ Login Page
 
 {% block content %}
 <form action="" method="post">
-{% csrf_token %} {{ form|crispy }}
+{% csrf_token %} 
+
+{{ form|crispy }}
 <p> Don't Have an account ? signup from <a href="{% url 'sign_up' %}">Here</a></p>
 
 <button type="submit" class="btn btn-success"> Login </button>

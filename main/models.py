@@ -21,17 +21,19 @@ class PostManager(models.Manager):
 
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    post_text = models.TextField(max_length=200)
+    post_text = models.TextField(max_length=200, unique_for_date='')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
-
+    
     objects = PostManager()
     def __str__(self):
         return self.post_text
     
+    def is_liked(self):
+        return author in likes 
     class Meta:
         ordering  = ["-created_at"]
-        
+            
     def get_absolute_url(self):
         return reverse('view_profile:details', kwargs={'username':self.author.username})

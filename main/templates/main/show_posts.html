@@ -1,3 +1,6 @@
+
+
+
 {% for post in posts %}
 <div class="card mt-2">
     <div class="card-header"><strong><a href="{% url 'view_profile' post.author.username %}">@{{ post.author.username }}</a></strong></div>
@@ -5,14 +8,15 @@
                   <div>
                       <h5 class="card-title"> {{ post.post_text}} </h5>                      
                     </div>
-                    
                     <!-- Options Control -->
                     {% include 'main/options_access.html' %}
                 </div>
+                <!-- Like Button  -->
+                {% include 'main/like_btn.html' %}  
                 <!-- add Date Info  -->
                 {% include 'main/viewDateInfo.html' %}
             </div>  
        <br>   
        {% empty %}
        <h3 style="text-align: center;">No Posts yet :(</h3>
-    {% endfor %}
+{% endfor %}
