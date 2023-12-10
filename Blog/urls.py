@@ -16,16 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static 
+from django.conf import settings
+import os
 
-IS_PRODUCTION_VERSION = False
-
+IS_PRODUCTION_VERSION = os.environ.get('IS_PRODUCTION_VERSION')
 
 urlpatterns = [
     path('', include('main.urls')),
-    path('', include('django.contrib.auth.urls'))
+    path('', include('django.contrib.auth.urls')),
+    path('api/', include('main.api.urls'))
     
 ]
+urlpatterns+=[(path('admin/', admin.site.urls))]
 
 if not IS_PRODUCTION_VERSION:
-    urlpatterns+=[(path('admin/', admin.site.urls))]
-    
+    pass     

@@ -1,14 +1,24 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 from . import models
-class Register_form(UserCreationForm):
-    
-    email = forms.EmailField(required=True)
-    # username = forms.CharField(widget=forms.TextInput(attrs={''}))
+
+class CustomUserForm(UserCreationForm):
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        model = models.User
+        fields = ['avatar', 'username', 'email']
+        
+    def __init__(self, *args, **kwargs):
+        super(CustomUserForm, self).__init__(*args, **kwargs)
+        for field in ['avatar', 'username', 'email']:
+            self.fields[field].help_text = "" 
+
+        
+    
+class Register_form(CustomUserForm):
+    
+    class Meta:
+        model = models.User
+        fields = ['avatar', 'username', 'email', 'password1', 'password2']
         
     def __init__(self, *args, **kwargs):
         super(Register_form, self).__init__(*args, **kwargs)

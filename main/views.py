@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from . import forms, models
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.defaults import page_not_found
@@ -8,10 +8,6 @@ import datetime
 from dateutil.relativedelta import relativedelta
 # Create your views here.
 
-def add_like(request):
-    # user = request.user 
-    # print(user)
-    pass 
 
 def delete_post(post_id):
     post = models.Post.objects.filter(id=post_id).first()
@@ -58,6 +54,7 @@ def home(re):
                 try:
                     group = Group.objects.get(name='mod')
                     group.user_set.remove(user)
+                    
                 except:
                     pass
         
@@ -113,12 +110,27 @@ def view_profile(re, username):
         delete_post(re)
     context['username'] = username
     try:
-        profile = User.objects.get(username=username)
+        profile = models.User.objects.get(username=username)
+        context['profile'] = profile
         profile_posts = models.Post.objects.filter(author=profile)
-        context['profile_posts'] = profile_posts
+        context['posts'] = profile_posts
         
     except:
         return render(re, '404.html')
     
     return render(re, 'main/view_profile.html', context)
 
+def edit_profile(request, username):
+    if request.user.username == username:
+        if request.method == 'GET':
+            form = forms.CustomUserForm(instance = request.user) 
+            return render(request, 'main/edit_profile.html', {'form':form})
+        form = forms.CustomUserForm(request.POST or None, request.FILES, instance=request.user)
+        if request.method == 'POST':
+            if form.is_valid():
+                form.save()
+                return redirect('/home/')
+        return render(request, 'main/edit_profile.html', {'form':form})
+    else:
+        return redirect('/home/')
+    

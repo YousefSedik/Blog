@@ -3,30 +3,17 @@
 {% block content %}
     <br>
     <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+        <img src="{{ profile.avatar.url }}" alt="" width="50" height="50">
         <h1>@{{ username }}</h1>
-
+        <!-- edit_profile -->
+        {% if username == user.username %}
+        <a href="{% url 'edit_profile' username %}">edit_profile</a>
+            
+        {% endif %}
+            
     </div>
-    
     <div class="content">
-        {% for post in profile_posts %}
-        <div class="card mt-2">
-            <div class="card-header"><strong><a href="{{ post.get_absolute_url }}">@{{ post.author.username }}</a></strong></div>
-            <div class="card-body d-flex flex-row justify-content-between">
-                  <div>
-                        <h5 class="card-title"> {{ post.title}} </h5>
-                        <p> {{ post.description}}</p>
-                  </div>
-                  <!-- Options Control  -->
-                  {% include 'main/options_access.html' %}
-            </div>
-            <!-- add Date Info  -->
-            {% include 'main/viewDateInfo.html' %}
-       </div>  
-       <br>   
-       {% empty %}
-       <h3 style="text-align: center;">@{{user.username}} Has No Posts Yet :( </h3>
-    {% endfor %}
-    
+        {% include 'main/show_posts.html' %}    
     </div>
         
 {% endblock content %}
