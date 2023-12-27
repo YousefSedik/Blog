@@ -8,7 +8,7 @@ from django.db.models import Q
 class User(AbstractUser):
     name = models.CharField(max_length=50, null=True)
     email = models.EmailField(unique=True, null=True)
-    avatar = models.ImageField(default = 'p.jpg', null=True)
+    avatar = models.ImageField(default = 'default.png', null=True)
     
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
